@@ -49,7 +49,7 @@ package main
 import "github.com/STiAT/go-omniinterface"
 
 func main() {
-    omnibus := omnibus.OMNiInterface{}
+    omnibus := omniinterface.OMNiInterface{}
     omnibus.URL = "http://servername:8080/objectserver/restapi/"
     omnibus.User = "username"
     omnibus.Password = "yoursecret"
@@ -76,7 +76,7 @@ package main
 import "github.com/STiAT/go-omniinterface"
 
 func main() {
-    omnibus := omnibus.OMNiInterface{}
+    omnibus := omniinterface.OMNiInterface{}
     omnibus.URL = "http://servername:8080/objectserver/restapi/"
     omnibus.User = "username"
     omnibus.Password = "yoursecret"
@@ -125,7 +125,7 @@ package main
 import "github.com/STiAT/go-omniinterface"
 
 func main() {
-    omnibus := omnibus.OMNiInterface{}
+    omnibus := omniinterface.OMNiInterface{}
     omnibus.URL = "http://servername:8080/objectserver/restapi/"
     omnibus.User = "username"
     omnibus.Password = "yoursecret"
@@ -155,7 +155,7 @@ package main
 import "github.com/STiAT/go-omniinterface"
 
 func main() {
-    omnibus := omnibus.OMNiInterface{}
+    omnibus := omniinterface.OMNiInterface{}
     omnibus.URL = "http://servername:8080/objectserver/restapi/"
     omnibus.User = "username"
     omnibus.Password = "yoursecret"
