@@ -66,39 +66,6 @@ func main() {
     if err != nil {
         fmt.Println("Error receiving Data from OMNIbus: " + err.Error())
     }
-
-    // POST request equals INSERT
-    insert := omnibus.Request{}
-    insert.Method = "POST"
-    currentTime := strconv.Itoa(int(time.Now().Unix()))
-    // example, may need to adopt to your alerts.status
-    insert.ColumnData := {
-        "Summary": "This is an event",
-        "Node": "testnode"
-        "Severity": 4
-        "FirstOccurrence": currentTime
-        "LastOccurrence": currentTime
-        "Agent": "test"
-        "AlertGroup": "test"
-        "AlertKey": "testnode:test"
-        "Class": 1234567
-        "EIFClassName": "testclass"
-        "ITMDisplayItem": "test"
-        "ITMSitFullName": "test"
-        "ITMSubOrigin": "test"
-        "Identifier": "testnode:test"
-        "Impact_Key": "testnode"
-        "Manager": "omniinterface"
-        "NodeAlias": ""
-        "OwnerUID": 0
-        "OwnerGID": 0
-        "Type": 1
-    }
-    ret, err = omnievent.SendRequest(insert)
-
-    if err != nil {
-        fmt.Println("Error inserting to OMNIbus: " + err.Error())
-    }
 }
 ```
 
