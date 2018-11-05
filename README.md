@@ -46,26 +46,31 @@ type Request struct {
 ```
 package main
 
-import "github.com/STiAT/go-omniinterface"
+import (
+	"fmt"
+
+	"github.com/STiAT/go-omniinterface"
+)
 
 func main() {
-    omnibus := omniinterface.OMNiInterface{}
-    omnibus.URL = "http://servername:8080/objectserver/restapi/"
-    omnibus.User = "username"
-    omnibus.Password = "yoursecret"
-    omnibus.PayloadStructCacheDir = "cache"
+	omnibus := omniinterface.OMNiInterface{}
+	omnibus.URL = "http://servername:8080/objectserver/restapi/"
+	omnibus.User = "username"
+	omnibus.Password = "yoursecret"
+	omnibus.PayloadStructCacheDir = "cache"
 
+	// GET request equals SELECT
+	sel := omniinterface.Request{}
+	sel.Method = "GET"
+	sel.DBPath = "alerts/status"
+	sel.Filter = "Severity > 5"
+	res, err := omnibus.SendRequest(sel)
 
-    // GET request equals SELECT
-    select := omnibus.Request{}
-    select.Method = "GET"
-    select.DBPath = "alerts/status"
-    select.Filter = "Severity > 5"
-    select, err := omnibus.SendRequest(select)
+	if err != nil {
+		fmt.Println("Error receiving Data from OMNIbus: " + err.Error())
+	}
 
-    if err != nil {
-        fmt.Println("Error receiving Data from OMNIbus: " + err.Error())
-    }
+	fmt.Println(res)
 }
 ```
 
@@ -73,78 +78,93 @@ func main() {
 ```
 package main
 
-import "github.com/STiAT/go-omniinterface"
+import (
+	"fmt"
+	"strconv"
+	"time"
+
+	"github.com/STiAT/go-omniinterface"
+)
 
 func main() {
-    omnibus := omniinterface.OMNiInterface{}
-    omnibus.URL = "http://servername:8080/objectserver/restapi/"
-    omnibus.User = "username"
-    omnibus.Password = "yoursecret"
-    omnibus.PayloadStructCacheDir = "cache"
-    
-    // POST request equals INSERT
-    insert := omnibus.Request{}
-    insert.Method = "POST"
-    currentTime := strconv.Itoa(int(time.Now().Unix()))
-    // example, may need to adopt to your alerts.status
-    // this would add an event to the alerts.status table
-    insert.ColumnData := {
-        "Summary": "This is an event",
-        "Node": "testnode"
-        "Severity": 4
-        "FirstOccurrence": currentTime
-        "LastOccurrence": currentTime
-        "Agent": "test"
-        "AlertGroup": "test"
-        "AlertKey": "testnode:test"
-        "Class": 1234567
-        "EIFClassName": "testclass"
-        "ITMDisplayItem": "test"
-        "ITMSitFullName": "test"
-        "ITMSubOrigin": "test"
-        "Identifier": "testnode:test"
-        "Impact_Key": "testnode"
-        "Manager": "omniinterface"
-        "NodeAlias": ""
-        "OwnerUID": 0
-        "OwnerGID": 0
-        "Type": 1
-    }
-    ret, err = omnievent.SendRequest(insert)
+	omnibus := omniinterface.OMNiInterface{}
+	omnibus.URL = "http://servername:8080/objectserver/restapi/"
+	omnibus.User = "username"
+	omnibus.Password = "yoursecret"
+	omnibus.PayloadStructCacheDir = "cache"
 
-    if err != nil {
-        fmt.Println("Error inserting to OMNIbus: " + err.Error())
-    }
+	// POST request equals INSERT
+	insert := omniinterface.Request{}
+	insert.Method = "POST"
+	currentTime := strconv.Itoa(int(time.Now().Unix()))
+	// example, may need to adopt to your alerts.status
+	// this would add an event to the alerts.status table
+	insert.ColumnData = map[string]interface{}{
+		"Summary":         "This is an event",
+		"Node":            "testnode",
+		"Severity":        4,
+		"FirstOccurrence": currentTime,
+		"LastOccurrence":  currentTime,
+		"Agent":           "test",
+		"AlertGroup":      "test",
+		"AlertKey":        "testnode:test",
+		"Class":           1234567,
+		"EIFClassName":    "testclass",
+		"ITMDisplayItem":  "test",
+		"ITMSitFullName":  "test",
+		"ITMSubOrigin":    "test",
+		"Identifier":      "testnode:test",
+		"Impact_Key":      "testnode",
+		"Manager":         "omniinterface",
+		"NodeAlias":       "",
+		"OwnerUID":        0,
+		"OwnerGID":        0,
+		"Type":            1,
+	}
+	ret, err := omnibus.SendRequest(insert)
+
+	if err != nil {
+		fmt.Println("Error inserting to OMNIbus: " + err.Error())
+	}
+
+	fmt.Println(ret)
 }
+
 ```
 
 ### PATCH Request (UPDATE)
 ```
 package main
 
-import "github.com/STiAT/go-omniinterface"
+import (
+	"fmt"
+	
+        "github.com/STiAT/go-omniinterface"
+)
 
 func main() {
-    omnibus := omniinterface.OMNiInterface{}
-    omnibus.URL = "http://servername:8080/objectserver/restapi/"
-    omnibus.User = "username"
-    omnibus.Password = "yoursecret"
-    omnibus.PayloadStructCacheDir = "cache"
+	omnibus := omniinterface.OMNiInterface{}
+	omnibus.URL = "http://servername:8080/objectserver/restapi/"
+	omnibus.User = "username"
+	omnibus.Password = "yoursecret"
+	omnibus.PayloadStructCacheDir = "cache"
 
-    // PATCH request equals UPDATE
-    // this will update all events having Severity 4 to Severity 6
-    patch := omnibus.Request{}
-    patch.Method = "PATCH"
-    patch.Filter = "Severity = 4"
-    patch.ColumnData := {
-        "Severity": 6
-    }
+	// PATCH request equals UPDATE
+	// this will update all events having Severity 4 to Severity 6
+	patch := omniinterface.Request{}
+	patch.Method = "PATCH"
+	patch.Filter = "Severity = 4"
+	patch.ColumnData = map[string]interface{}{
+		"Severity": 6,
+	}
 
-    ret, err = omnievent.SendRequest(patch)
+	ret, err := omnibus.SendRequest(patch)
 
-    if err != nil {
-        fmt.Println("Error updating OMNIbus Entries: " + err.Error())
-    }
+	if err != nil {
+		fmt.Println("Error updating OMNIbus Entries: " + err.Error())
+	}
+
+	fmt.Println(ret)
 }
 ```
 
@@ -152,23 +172,29 @@ func main() {
 ```
 package main
 
-import "github.com/STiAT/go-omniinterface"
+import (
+	"fmt"
+	
+        "github.com/STiAT/go-omniinterface"
+)
 
 func main() {
-    omnibus := omniinterface.OMNiInterface{}
-    omnibus.URL = "http://servername:8080/objectserver/restapi/"
-    omnibus.User = "username"
-    omnibus.Password = "yoursecret"
-    omnibus.PayloadStructCacheDir = "cache"
+	omnibus := omniinterface.OMNiInterface{}
+	omnibus.URL = "http://servername:8080/objectserver/restapi/"
+	omnibus.User = "username"
+	omnibus.Password = "yoursecret"
+	omnibus.PayloadStructCacheDir = "cache"
 
-    delete := omnibus.Request{}
-    delete.Method = "DELETE"
-    delete.Filter = "Node = 'testnode'"
+	delete := omniinterface.Request{}
+	delete.Method = "DELETE"
+	delete.Filter = "Node = 'testnode'"
 
-    ret, err = omnievent.SendRequest(delete)
+	ret, err := omnibus.SendRequest(delete)
 
-    if err != nil {
-        fmt.Println("Error deleting OMNIbus Entries: " + err.Error())
-    }
+	if err != nil {
+		fmt.Println("Error deleting OMNIbus Entries: " + err.Error())
+	}
+
+	fmt.Println(ret)
 }
 ```
